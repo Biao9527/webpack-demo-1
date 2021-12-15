@@ -1,25 +1,22 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const base = require('./webpack.config.base')
 
 module.exports = {
-  mode: 'development',
-  entry: './src/index.js',
-  devServer: {
-    static: './dist',
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[chunkhash].js',
-  },
-  plugins: [new HtmlWebpackPlugin({
-    title: 'My App',
-    template: 'src/index.html'
-  })],
+  ...base,
+  mode: 'production',
+  plugins: [
+  ...base.plugins,
+  new MiniCssExtractPlugin({
+    filename: "[name].[chunkhash].css",
+    chunkFilename: "[id].[chunkhash].css",
+  })
+  ],
   module: {
     rules: [
+      ...base.module.rules,
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
     ],
   },
